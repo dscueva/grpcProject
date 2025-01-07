@@ -1,0 +1,38 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  server:
+    build: ./server
+    container_name: grpc_server
+    ports:
+      - "50051:50051"
+    networks:
+      - grpc_network
+
+  envoy:
+    image: envoyproxy/envoy:v1.21.0
+    container_name: envoy_proxy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
+    depends_on:
+      - server
+    networks:
+      - grpc_network
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: react_client
+    ports:
+      - "3000:80" # Maps port 80 in the container to port 3000 on the host
+    networks:
+      - grpc_network
+
+networks:
+  grpc_network:
+    driver: bridge

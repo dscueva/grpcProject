@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package sum;
+
+// Specifies the Go package path and the Go package name.
+option go_package = "grpcProject/server/proto;sum";
+
+// The request message containing two integers.
+message SumRequest {
+  int32 a = 1;
+  int32 b = 2;
+}
+
+// The response message containing the result.
+message SumReply {
+  int32 result = 1;
+}
+
+// The sum service definition.
+service SumService {
+  // Sends a sum request and receives the result.
+  rpc Add (SumRequest) returns (SumReply);
+}
